@@ -3,13 +3,12 @@
   "description": "This WordPress post subtitle plugin.",
   "type": "wordpress-plugin",
   "minimum-stability": "stable",
-  "license": "proprietary",
+  "license": "GPL-2.0-or-later",
   "authors": [
     {
       "name": "Aleksei Tikhomirov",
       "email": "alex@rwsite.ru"
     }
   ],
-  "require": {
-  }
+  "require": {}
 }
