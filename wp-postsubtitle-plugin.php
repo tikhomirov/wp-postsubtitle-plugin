@@ -50,6 +50,31 @@ class PostExtendSubtitle
             // обновление полей при сохранении
             add_action('save_post', [$this, 'post_fields_update'], 10, 3);
         });
+
+        // Приоритет 20: после add_theme_support('subtitle') в теме (after_setup_theme)
+        // и чтобы успеть подхватить post types с add_post_type_support('subtitle').
+        add_action('init', function () {
+            if (!get_theme_support('subtitle')) {
+                return;
+            }
+
+            $post_types = array_unique(array_merge(
+                ['post'],
+                get_post_types_by_support('subtitle')
+            ));
+
+            foreach ($post_types as $post_type) {
+                register_post_meta($post_type, 'subtitle', [
+                    'type'              => 'string',
+                    'single'            => true,
+                    'show_in_rest'      => true,
+                    'sanitize_callback' => 'sanitize_text_field',
+                    'auth_callback'     => static function ($allowed, $meta_key, $object_id) {
+                        return current_user_can('edit_post', $object_id);
+                    },
+                ]);
+            }
+        }, 20);
     }
 
     public static function the_subtitle($before, $after){
